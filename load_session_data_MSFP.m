@@ -1,6 +1,6 @@
 % function [licks_alltrials, time_licks, fluo_output_alltrials, time_fluo, ...
 %     revtrial, TT_allRsizes, thisRsize_pos, CSin, CSout,...
-%     TraceEnd,SR_fluo,num_EXC, RotEnc_output_alltrials] = load_session_data_MSFP(protocol, mouse, day, alignTo,...
+%     TraceEnd,SR_fluo,num_EXC] = load_session_data_MSFP(protocol, mouse, day, alignTo,...
 %     sinal_filtLicking)
 
 % Load the data
@@ -41,6 +41,8 @@ num_rois = MSFPAcq.ROI;
 sinal_filtLicking = 1;
 alignTo = 'CS';
 protocol = 'Selina_C5D5R3E3R3';
+mouse = 'Test';
+day = '20220207';
 %% See if we should ignore trials after mouse looses motivation
 
 if sinal_filtLicking
@@ -96,29 +98,7 @@ for i_TT = 1:num_TT
        TT(i_TT),Data,posTrials{i_TT},time_fluo,alignTo);
    % dimensions of fluo_output: time,trials,rois
    
-   RotEnc_output_alltrials{i_TT} = get_aligned_RotEnc(TT(i_TT),...
-       Data,posTrials{i_TT},time_RotEnc,alignTo,protocol);
-   
-   % This will only be used in the Reversal Task
-   if strcmp(protocol,'Revers') 
-       outcomes_thistriatltype = Session.RewardDelivered(posTrials{i_TT});
-       if ~isempty(find(diff(outcomes_thistriatltype)~=0,1,'first'))
-           revtrial(i_TT) = find(diff(outcomes_thistriatltype)~=0,1,'first')+1;  % First trial with reversed outcome for this CS
-       else
-           revtrial(i_TT) = nan;
-       end
-   elseif strcmp(protocol,'DRL6Rv')
-       outcomes_thistriatltype = Session.RewardDelivered(posTrials{i_TT});
-       if i_TT < 4 && ~isempty(find(outcomes_thistriatltype ~= 0,1))
-           revtrial(i_TT) = find(outcomes_thistriatltype ~= 0,1,'first');  % First trial with reversed outcome in this protocol is when reward is larger than zero for TT1-3
-       elseif i_TT >= 4 && ~isempty(find(outcomes_thistriatltype == 0,1))
-           revtrial(i_TT) = find(outcomes_thistriatltype == 0,1,'first');  % First trial with reversed outcome in this protocol is when reward is larger than zero for TT4-6
-       else
-           revtrial(i_TT) = nan;
-       end
-   else      
-       revtrial(i_TT) = nan;
-   end
+
    
    % Get reward sizes and location for each trial type
    if isfield(Session,'RewardDelivered')

@@ -15,22 +15,9 @@ switch alignTo
         alignstate = 'Trace';
 end
 
-if strcmp(protocol,'DRL6Od') || strcmp(protocol,'DRL3Od')
+if strcmp(protocol,'Selina_C5D5R3E3R3') %|| strcmp(protocol,'DRL3Od')
     StimState = ['Stimulus' num2str(ThisType) 'Delivery'];
-elseif strcmp(protocol,'VarMgR') || strcmp(protocol,'Eshl16') || strcmp(protocol,'VarMag')
-    if ThisType == 2 % this is trial type 4 in this protocol when all trial types are presented, will need to modify to make it more general
-        ThisTypeCorr = 7;
-    elseif ThisType == 3
-        ThisTypeCorr = 2;  % any random StimulusXDelivery that will not ever be called in this protocol
-    else ThisTypeCorr = 1;
-    end
-    StimState = ['Stimulus' num2str(ThisTypeCorr) 'Delivery'];
-elseif strcmp(protocol,'Es163O')
-    StimState = ['Stimulus' num2str(ThisType) 'Delivery'];
-elseif strcmp(protocol,'Revers') || strcmp(protocol,'DRL6Rv')
-    StimState = ['Stimulus' num2str(ThisType) 'Delivery'];
-elseif strcmp(protocol,'WDMSFP') 
-    StimState = 'none';
+
 end
 
 
