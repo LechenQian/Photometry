@@ -134,7 +134,7 @@ class Mouse_data:
                     'Trace':mat_contents['States']['Trace'][0],
                     'ITI':mat_contents['States']['ITI'][0],
                     'UnpredReward':mat_contents['States']['UnexpectedReward'][0],
-                    'Reward':mat_contents['States']['Reward'][0],
+                    'water':mat_contents['States']['Reward'][0],
                     'TrialEnd':mat_contents['States']['TrialEnd'][0],
                      'AMOT': list_ROIs_gcamp[corr_ROI['AMOT']+1], 'PMOT': list_ROIs_gcamp[corr_ROI['PMOT']+1], 'ALOT':list_ROIs_gcamp[corr_ROI['ALOT']+1],
                              'PLOT':list_ROIs_gcamp[corr_ROI['PLOT']+1],'MNacS':list_ROIs_gcamp[corr_ROI['MNacS']+1],'LNacS':list_ROIs_gcamp[corr_ROI['LNacS']+1],
@@ -155,7 +155,7 @@ class Mouse_data:
                     'Trace':mat_contents['States']['Trace'][0],
                     'ITI':mat_contents['States']['ITI'][0],
                     'UnpredReward':mat_contents['States']['UnexpectedReward'][0],
-                    'Reward':mat_contents['States']['Reward'][0],
+                    'water':mat_contents['States']['Reward'][0],
                     'TrialEnd':mat_contents['States']['TrialEnd'][0],
                      'AMOT': list_ROIs_gcamp[corr_ROI['AMOT']+1], 'PMOT': list_ROIs_gcamp[corr_ROI['PMOT']+1], 'ALOT':list_ROIs_gcamp[corr_ROI['ALOT']+1],
                              'PLOT':list_ROIs_gcamp[corr_ROI['PLOT']+1],'MNacS':list_ROIs_gcamp[corr_ROI['MNacS']+1],'LNacS':list_ROIs_gcamp[corr_ROI['LNacS']+1],
@@ -239,8 +239,8 @@ if __name__ == '__main__':
     # load file
   
     
-    # mouse_names = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
-    mouse_names = ['FgDA_01']
+    mouse_names = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
+    # mouse_names = ['FgDA_01']
     for mouse_name in mouse_names:
         cute = Mouse_data(mouse_name, protocol = 'Selina_C5D5R3E5R3',filedir = load_path,group = 'T')
         cute.read_filename()
