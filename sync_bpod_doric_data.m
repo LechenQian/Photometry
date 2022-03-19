@@ -309,6 +309,9 @@ function sync_bpod_doric_data(filedir, filename,DoricStudioVersion)
         Index = find(not(cellfun('isempty',ind)));
         if numel(Index) > 1; Index = Index(1); end
         DIO = var_values{Index};
+        if strcmp(filename{1,1},'FgDA_01_Selina_C5D5R3E5R3_20220214_cond6.mat')
+            DIO(800000:end) = 0;
+        end
         DIO_time = var_time{Index};
     
         x = DIO/max(DIO);

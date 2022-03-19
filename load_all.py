@@ -239,13 +239,16 @@ if __name__ == '__main__':
     # load file
   
     
-    mouse_names = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
-    # mouse_names = ['FgDA_01']
+    # mouse_names = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
+    mouse_names = ['FgDA_01']
     for mouse_name in mouse_names:
         cute = Mouse_data(mouse_name, protocol = 'Selina_C5D5R3E5R3',filedir = load_path,group = 'T')
         cute.read_filename()
         #parse data
         cute.create_dataset()
+        
+        if mouse_name == 'FgDA_01':
+            cute.df_bpod_doric['3_20220214']['dataframe'] = cute.df_bpod_doric['3_20220214']['dataframe'].iloc[0:80]
 
     
         
