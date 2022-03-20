@@ -23,6 +23,8 @@ from load_all import Mouse_data
 from load_all import pickle_dict
 from load_all import load_pickleddata
 from sklearn.linear_model import LinearRegression
+
+
 #%%
 
 mice = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
@@ -96,8 +98,11 @@ for mouse_id in mice:
                             data[mouse_id][trialtype]['signal_gcamp'][site][trial,:,index] = values1[0:180]
                 except:
                     pass
-            
-            
+
+   #%%         
+save_path = path+'/processed'
+filename = 'corrected_gcamp_data'
+pickle_dict(data,save_path,filename)           
 
 
 #%%
