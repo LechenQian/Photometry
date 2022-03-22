@@ -166,7 +166,7 @@ for mouse_name in mice:
             ax[2].axvline(x = odor_off_point,color = 'k')
             ax[2].axvline(x = water_point)
         for index,i in enumerate(ext_days):
-            licking_conv = np.convolve(basis,across_day_licking[:,i],mode = 'full')[0:sample_points]
+            licking_conv = np.convolve(basis,across_day_licking_omit[:,i],mode = 'full')[0:sample_points]
             ax[3].plot(licking_conv+gap*index,color =cm.cool(index/float(5)),label = all_days[i])
             ax[3].legend(frameon=False)
             ax[3].set_title('extinction',fontsize = 20)
@@ -183,8 +183,8 @@ for mouse_name in mice:
             ax[4].axvline(x = water_point)
     
     
-    savepath = 'D:/PhD/Photometry/DATA/round_20220307/figures'
-    plt.savefig("{0}/{1}_{2}_licking.png".format(savepath,mouse_name,TT), bbox_inches="tight", dpi = 72)
-    plt.show()
+        savepath = 'D:/PhD/Photometry/DATA/round_20220307/figures'
+        plt.savefig("{0}/{1}_{2}_licking.png".format(savepath,mouse_name,TT), bbox_inches="tight", dpi = 72)
+        plt.show()
 
 
