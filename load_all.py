@@ -116,7 +116,7 @@ class Mouse_data:
     
             # ROI correspondence table
             if perdate_df['num_ROI'] == 6:
-                corr_ROI = {'AMOT':0,'PMOT':4,'ALOT':5,'PLOT':3,'MNacS':2,'LNacS':3}
+                corr_ROI = {'AMOT':0,'PMOT':4,'ALOT':1,'PLOT':5,'MNacS':2,'LNacS':3}
                 perdate_df['corr_ROI'] = corr_ROI
             elif perdate_df['num_ROI'] == 12:
                 corr_ROI = {'AMOT':9,'PMOT':8,'ALOT':1,'PLOT':4,'MNacS':5,'LNacS':0,'NacC':2, 'AmLOT':3, 'Pir':10, 'VP':11}
@@ -239,8 +239,8 @@ if __name__ == '__main__':
     # load file
   
     
-    # mouse_names = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
-    mouse_names = ['FgDA_01']
+    mouse_names = ['FrgD1_01','FrgD2_01','FrgD2_02']
+    # mouse_names = ['FgDA_01']
     for mouse_name in mouse_names:
         cute = Mouse_data(mouse_name, protocol = 'Selina_C5D5R3E5R3',filedir = load_path,group = 'T')
         cute.read_filename()

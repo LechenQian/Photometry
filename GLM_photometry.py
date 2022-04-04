@@ -62,17 +62,18 @@ mouse_name = 'FgDA_01'
 gcamp_data = load_pickleddata('D:/PhD/Photometry/DATA/round_20220307/processed/corrected_gcamp_data.pickle')
 pickle_data = load_pickleddata('D:/PhD/Photometry/DATA/round_20220307/processed/{}_stats.pickle'.format(mouse_name))
 #%%
-for session in range(len(pickle_data['all_days'])):
+rel_contrib_DICT = {}
+for session in range(len(pickle_data.all_days)):
     if mouse_name == 'FgDA_01':   
         good_sites = ['AMOT','PMOT','ALOT','PLOT','MNacS','LNacS']
     else:
-        good_sites = pickle_data['df_bpod_doric'][str(session)+'_'+pickle_data['all_days'][session]]
+        good_sites = pickle_data.df_bpod_doric[str(session)+'_'+pickle_data.all_days[session]]
     
     num_neuron = len(good_sites)
     rel_contrib_mat = np.zeros([num_neuron,5]) # create a empty matrix to store the relative contribution of each variable
     
     GLM_DICT = {}
-    rel_contrib_DICT = {}
+    
     for index,site in enumerate(good_sites):
         beh_df = pickle_data.df_bpod_doric[str(session)+'_' + pickle_data.all_days[session]]['dataframe']
         
@@ -253,66 +254,139 @@ for session in range(len(pickle_data['all_days'])):
 
 #%%
 import seaborn as sns
-mean_var = np.mean(rel_contrib_mat,axis = 0)
-std_var = np.std(rel_contrib_mat,axis = 0)
-fig, ax = plt.subplots(figsize = (5,4))
-x = [1,2,3,4,5]
-# ax.bar(x, mean_var, yerr=std_var/2, align='center', alpha=0.5, ecolor='black', capsize=10)
-ax.boxplot(rel_contrib_mat)
-ax.set_ylabel('relatie contribution (%)')
-ax.set_xticks(x)
-ax.set_xticklabels(['go odor','no-go odor','water','licking','trialnum'],rotation = 'vertical')
-ax.set_title('Session {}'.format(session),pad = 20)
-ax.set_ylim([0,1])
-ax.yaxis.grid(True)
-
-# Save the figure and show
-plt.tight_layout()
-# savename = 'D:/PhD/Microscope/Selina/imaging_data/new_figures/{}-{}/relative_contribution_variables_session{}'.format(mouse_name,date,session)
-# plt.savefig(savename+'.png', bbox_inches="tight", dpi = 400,transparent = True)
-
-# plt.savefig(savename+'.svg', bbox_inches="tight", dpi = 400,transparent = True)
-plt.show()
 
 
-
-
-#
-fig, ax = plt.subplots(1,5,figsize = (8,3),sharey = True)
-xlabels = ['go odor','no-go odor','water','licking','trialnum']
-bin_edge = np.linspace(0,1,20)
-yticks = np.arange(0,num_neuron,10)
-for i in range(5):
-
-    ax[i].hist(rel_contrib_mat[:,i],bins = bin_edge,alpha=0.5, edgecolor='black')
+for session in range(len(pickle_data.all_days)):
+    rel_contrib_mat = rel_contrib_DICT[str(session)]
+    mean_var = np.mean(rel_contrib_mat,axis = 0)
+    std_var = np.std(rel_contrib_mat,axis = 0)
+    fig, ax = plt.subplots(figsize = (5,4))
+    x = [1,2,3,4,5]
+    # ax.bar(x, mean_var, yerr=std_var/2, align='center', alpha=0.5, ecolor='black', capsize=10)
+    ax.boxplot(rel_contrib_mat)
+    ax.set_ylabel('relatie contribution (%)')
+    ax.set_xticks(x)
+    ax.set_xticklabels(['go odor','no-go odor','water','licking','trialnum'],rotation = 'vertical')
+    ax.set_title('Session {}'.format(session),pad = 20)
+    ax.set_ylim([0,1])
+    ax.yaxis.grid(True)
     
-    ax[i].set_xticks([0,1])
-    ax[i].set_xticklabels([0,100])
-    ax[i].set_yticks(yticks)
-    ax[i].set_title(xlabels[i])
+    # Save the figure and show
+    plt.tight_layout()
+    # savepath = 'D:/PhD/Photometry/DATA/round_20220307/figures'
+    # plt.savefig("{0}/{1}_{2}.png".format(savepath,mouse_name,TT), bbox_inches="tight", dpi = 72)
+    # savename = 'D:/PhD/Microscope/Selina/imaging_data/new_figures/{}-{}/relative_contribution_variables_session{}'.format(mouse_name,date,session)
+    # plt.savefig(savename+'.png', bbox_inches="tight", dpi = 400,transparent = True)
+    
+    # plt.savefig(savename+'.svg', bbox_inches="tight", dpi = 400,transparent = True)
+    plt.show()
     
     
-    ax[i].yaxis.grid(True)
+    
+    
+    #
+    fig, ax = plt.subplots(1,5,figsize = (8,3),sharey = True)
+    xlabels = ['go odor','no-go odor','water','licking','trialnum']
+    bin_edge = np.linspace(0,1,20)
+    yticks = np.arange(0,num_neuron,10)
+    for i in range(5):
+    
+        ax[i].hist(rel_contrib_mat[:,i],bins = bin_edge,alpha=0.5, edgecolor='black')
+        
+        ax[i].set_xticks([0,1])
+        ax[i].set_xticklabels([0,100])
+        ax[i].set_yticks(yticks)
+        ax[i].set_title(xlabels[i])
+        
+        
+        ax[i].yaxis.grid(True)
+    
+    # Save the figure and show
+    fig.text(0.5, 0.001, 'Relative contribution (%)', ha='center')
+    fig.text(0.001, 0.5, 'Neurons', va='center', rotation='vertical')
+    plt.tight_layout()
+    # savename = 'D:/PhD/Microscope/Selina/imaging_data/new_figures/{}-{}/relative_contribution_variables_histogram_session{}'.format(mouse_name,date,session)
+    # plt.savefig(savename+'.png', bbox_inches="tight", dpi = 400,transparent = True)
+    
+    # plt.savefig(savename+'.svg', bbox_inches="tight", dpi = 400,transparent = True)
+    plt.show()
+    #
+    yticks = np.arange(0,num_neuron,10)
+    ax = sns.heatmap(rel_contrib_mat)
+    ax.set_ylabel('Neurons')
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(yticks)
+    ax.set_xticks(np.array(x)-0.5)
+    ax.set_xticklabels(['go odor','no-go odor','water','licking','trialnum'],rotation = 'vertical')
+    # savename = 'D:/PhD/Microscope/Selina/imaging_data/new_figures/{}-{}/relative_contribution_variables_heatmap_session{}'.format(mouse_name,date,sessions[session_index])
+    # plt.savefig(savename+'.png', bbox_inches="tight", dpi = 400,transparent = True)
+    
+    # plt.savefig(savename+'.svg', bbox_inches="tight", dpi = 400,transparent = True)
+    plt.show()
 
-# Save the figure and show
-fig.text(0.5, 0.001, 'Relative contribution (%)', ha='center')
-fig.text(0.001, 0.5, 'Neurons', va='center', rotation='vertical')
-plt.tight_layout()
-# savename = 'D:/PhD/Microscope/Selina/imaging_data/new_figures/{}-{}/relative_contribution_variables_histogram_session{}'.format(mouse_name,date,session)
-# plt.savefig(savename+'.png', bbox_inches="tight", dpi = 400,transparent = True)
+#%%
+contrib_go = []
+contrib_nogo = []
+contrib_licking = []
+contrib_water = []
+contrib_trianum = []
 
-# plt.savefig(savename+'.svg', bbox_inches="tight", dpi = 400,transparent = True)
-plt.show()
-#
-yticks = np.arange(0,num_neuron,10)
-ax = sns.heatmap(rel_contrib_mat)
-ax.set_ylabel('Neurons')
-ax.set_yticks(yticks)
-ax.set_yticklabels(yticks)
-ax.set_xticks(np.array(x)-0.5)
-ax.set_xticklabels(['go odor','no-go odor','water','licking','trialnum'],rotation = 'vertical')
-# savename = 'D:/PhD/Microscope/Selina/imaging_data/new_figures/{}-{}/relative_contribution_variables_heatmap_session{}'.format(mouse_name,date,sessions[session_index])
-# plt.savefig(savename+'.png', bbox_inches="tight", dpi = 400,transparent = True)
+contrib_go_std = []
+contrib_nogo_std = []
+contrib_licking_std = []
+contrib_water_std = []
+contrib_trianum_std = []
 
-# plt.savefig(savename+'.svg', bbox_inches="tight", dpi = 400,transparent = True)
-plt.show()
+for session in range(len(pickle_data.all_days)):
+    rel_contrib_mat = rel_contrib_DICT[str(session)]
+    mean_var = np.mean(rel_contrib_mat,axis = 0)   
+    std_var = np.std(rel_contrib_mat,axis = 0)
+    # adding mean of sites value to variable list
+    contrib_go.append(mean_var[0])
+    contrib_nogo.append(mean_var[1])
+    contrib_licking.append(mean_var[3])
+    contrib_water.append(mean_var[2])
+    contrib_trianum.append(mean_var[4])
+    
+    contrib_go_std.append(std_var[0])
+    contrib_nogo_std.append(std_var[1])
+    contrib_licking_std.append(std_var[3])
+    contrib_water_std.append(std_var[2])
+    contrib_trianum_std.append(std_var[4])
+    if session in [4,9,13,16]:
+        contrib_go.append(np.nan)
+        contrib_nogo.append(np.nan)
+        contrib_licking.append(np.nan)
+        contrib_water.append(np.nan)
+        contrib_trianum.append(np.nan)  
+        
+        contrib_go_std.append(np.nan)
+        contrib_nogo_std.append(np.nan)
+        contrib_licking_std.append(np.nan)
+        contrib_water_std.append(np.nan)
+        contrib_trianum_std.append(np.nan)
+    
+#%%
+
+mpl.rcParams['lines.linewidth'] = 1
+
+
+plt.subplots(1,1,figsize = (11,5))
+plt.set_cmap('Set2')
+x = np.arange(len(contrib_go))
+plt.scatter(x,contrib_go)
+plt.errorbar(x,contrib_go,yerr = contrib_go_std,label = 'go') 
+plt.scatter(x,contrib_nogo)
+plt.errorbar(x,contrib_nogo,yerr = contrib_nogo_std,label = 'no go')   
+plt.scatter(x,contrib_water)
+plt.errorbar(x,contrib_water,yerr = contrib_water_std,label = 'water')   
+plt.scatter(x,contrib_licking)
+plt.errorbar(x,contrib_licking,yerr = contrib_licking_std,label = 'licking')  
+plt.scatter(x,contrib_trianum) 
+plt.errorbar(x,contrib_trianum,yerr = contrib_trianum_std,label = 'motivation')    
+plt.legend()
+plt.xticks(ticks = x, labels = ['cond1','cond2','cond3','cond4','cond5','','deg1','deg2','deg3','deg4','deg5','','rec1','rec2','rec3','pre-ext','','ext1','ext2','ext3','','frec1','frec2','frec3'],
+           rotation = 45)
+plt.show()  
+    
+    
