@@ -167,8 +167,8 @@ class Mouse_data:
                              'ALOT_isos':list_ROIs_isos[corr_ROI['ALOT']+1],'PLOT_isos':list_ROIs_isos[corr_ROI['PLOT']+1],
                              'MNacS_isos':list_ROIs_isos[corr_ROI['MNacS']+1],
                              'LNacS_isos':list_ROIs_isos[corr_ROI['LNacS']+1],
-                             'NacC_isos':list_ROIs_gcamp[corr_ROI['NacC']+1],'AmLOT_isos':list_ROIs_gcamp[corr_ROI['AmLOT']+1],
-                             'Pir_isos':list_ROIs_gcamp[corr_ROI['Pir']+1],'VP_isos':list_ROIs_gcamp[corr_ROI['VP']+1],
+                             'NacC_isos':list_ROIs_isos[corr_ROI['NacC']+1],'AmLOT_isos':list_ROIs_isos[corr_ROI['AmLOT']+1],
+                             'Pir_isos':list_ROIs_isos[corr_ROI['Pir']+1],'VP_isos':list_ROIs_isos[corr_ROI['VP']+1],
                              }
                 
             df_trial = pd.DataFrame(data = d)  
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     # load file
   
     
-    mouse_names = ['FrgD1_01','FrgD2_01','FrgD2_02']
+    mouse_names = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
     # mouse_names = ['FgDA_01']
     for mouse_name in mouse_names:
         cute = Mouse_data(mouse_name, protocol = 'Selina_C5D5R3E5R3',filedir = load_path,group = 'T')
