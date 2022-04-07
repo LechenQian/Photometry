@@ -134,9 +134,9 @@ odor_off_point = int(sample_points/9*3)
 
 gap = 10
 # mice = ['FgDA_01','FrgD1_01','FrgD2_01','FrgD2_02']
-mice = ['FrgD2_02']
+mice = ['FgDA_01']
 # mice = ['FrgD1_01']
-nsites = 6
+nsites = 10
 trialtypes = ['go', 'no_go', 'go_omit', 'UnpredReward']
 for mouse_name in mice:
     mouse = load_pickleddata('D:/PhD/Photometry/DATA/round_20220307/processed/{}_stats.pickle'.format(mouse_name))
@@ -441,9 +441,41 @@ sns.heatmap(init_mat)
 
 
 
+#%%
+
+container1 = []
+TT = 'go'
+site = 'PLOT'
+dates = [5,6,7,8,9]
+temp = data[mouse_name][TT]['signal_gcamp'][site]
+trial_num = sum(~np.isnan(temp[:,1,i]))
+for t in range(trial_num):
+    for j in dates:
+        container1.append(np.max(temp[t,40:70,j]))
+
+x = np.arange(len(container1))
+
+container2 = []
+TT = 'go'
+site = 'PMOT'
+dates = [5,6,7,8,9]
+temp = data[mouse_name][TT]['signal_gcamp'][site]
+trial_num = sum(~np.isnan(temp[:,1,i]))
+for t in range(trial_num):
+    for j in dates:
+        container2.append(np.max(temp[t,40:70,j]))
+
+x2 = np.arange(len(container2))
 
 
 
+
+
+
+
+
+plt.scatter(x,container1)
+plt.scatter(x2,container2)
 
 
 
