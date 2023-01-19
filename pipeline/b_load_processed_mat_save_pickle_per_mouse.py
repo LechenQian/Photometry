@@ -26,7 +26,7 @@ import pickle
 
 
 class Mouse_data:
-    def __init__(self,mouse_id,protocol,filedir,group = 'T'):
+    def __init__(self,mouse_id,protocol,filedir,group = 'T',implant_side = 'L'):
         self.mouse_id = mouse_id
         self.filedir = filedir
         self.filename = ''
@@ -47,11 +47,12 @@ class Mouse_data:
         self.licking_baselicking = {}
         self.stats = {}
         self.event_data = ''
-        self.odor_bef = 3.0
+        self.odor_bef = 2.0
         self.odor_on = 1.0
         self.delay = 2.5
         self.rew_after = 8
         self.avg_ITI = 2
+        self.implant_side = implant_side
         
 
     def read_filename(self):
@@ -74,6 +75,7 @@ class Mouse_data:
     def create_dataset(self): #{'date':df of eventcode} format from original CSV
         date_list = []
         df = {}
+        df_2 = {}
         task = []
         
         for session, file in enumerate(self.filename):
@@ -116,9 +118,13 @@ class Mouse_data:
     
     
             # ROI correspondence table
-            if perdate_df['num_ROI'] == 6:
+            if perdate_df['num_ROI'] == 6 and self.implant_side == 'L':
                 corr_ROI = {'AMOT':0,'PMOT':4,'ALOT':1,'PLOT':5,'MNacS':2,'LNacS':3}
                 perdate_df['corr_ROI'] = corr_ROI
+            elif perdate_df['num_ROI'] == 6 and self.implant_side == 'R':
+                corr_ROI = {'AMOT':1,'PMOT':0,'ALOT':4,'PLOT':5,'MNacS':2,'LNacS':3}
+                perdate_df['corr_ROI'] = corr_ROI
+                
             elif perdate_df['num_ROI'] == 12:
                 corr_ROI = {'AMOT':9,'PMOT':8,'ALOT':1,'PLOT':4,'MNacS':5,'LNacS':0,'NacC':2, 'AmLOT':3, 'Pir':10, 'VP':11}
                 perdate_df['corr_ROI'] = corr_ROI
@@ -131,6 +137,8 @@ class Mouse_data:
                     'go':mat_contents['States']['go'][0],
                     'no_go':mat_contents['States']['no_go'][0],
                         'go_omit':mat_contents['States']['go_omit'][0],
+                        'c_odor':mat_contents['States']['c_odor'][0],
+                        'c_odor_omit':mat_contents['States']['c_odor_omit'][0],
                     'background':mat_contents['States']['background'][0],
                     'Trace':mat_contents['States']['Trace'][0],
                     'ITI':mat_contents['States']['ITI'][0],
@@ -145,6 +153,7 @@ class Mouse_data:
                              'MNacS_isos':list_ROIs_isos[corr_ROI['MNacS']+1],
                              'LNacS_isos':list_ROIs_isos[corr_ROI['LNacS']+1],
                              }
+                
             elif perdate_df['num_ROI'] == 12:
                 d = {
                      'TrialStart':mat_contents['States']['TrialStart'][0],
@@ -152,6 +161,8 @@ class Mouse_data:
                     'go':mat_contents['States']['go'][0],
                     'no_go':mat_contents['States']['no_go'][0],
                         'go_omit':mat_contents['States']['go_omit'][0],
+                        'c_odor':mat_contents['States']['c_odor'][0],
+                        'c_odor_omit':mat_contents['States']['c_odor_omit'][0],
                     'background':mat_contents['States']['background'][0],
                     'Trace':mat_contents['States']['Trace'][0],
                     'ITI':mat_contents['States']['ITI'][0],
@@ -171,24 +182,50 @@ class Mouse_data:
                              'NacC_isos':list_ROIs_isos[corr_ROI['NacC']+1],'AmLOT_isos':list_ROIs_isos[corr_ROI['AmLOT']+1],
                              'Pir_isos':list_ROIs_isos[corr_ROI['Pir']+1],'VP_isos':list_ROIs_isos[corr_ROI['VP']+1],
                              }
-                
+            d_2 = {
+                 'TrialStart':[x[0] for x in mat_contents['States']['TrialStart'][0]],
+                     'Foreperiod':[x[0] for x in mat_contents['States']['Foreperiod'][0]],
+                'go_odor':[x[0] for x in mat_contents['States']['go'][0]],
+                'nogo_odor':[x[0] for x in mat_contents['States']['no_go'][0]],
+                    'go_omit':[x[0] for x in mat_contents['States']['go_omit'][0]],
+                    'control_odor':[x[0] for x in mat_contents['States']['c_odor'][0]],
+                    'control_odor_omit':[x[0] for x in mat_contents['States']['c_odor_omit'][0]],
+                'background':mat_contents['States']['background'][0],
+
+                'UnpredReward':[x[0] for x in mat_contents['States']['UnexpectedReward'][0]],
+                'water_on':[x[0][0] for x in mat_contents['States']['Reward'][0]],
+                'water_off':[x[0][1] for x in mat_contents['States']['Reward'][0]],
+                'trial_end':[x[0][1] for x in mat_contents['States']['TrialEnd'][0]]}
+                 
+            
             df_trial = pd.DataFrame(data = d)  
+            df_trial_2 = pd.DataFrame(data = d_2)  
             
             # add trialtype to the dataframe
             trialtype = []
-            for index, row in df_trial.iterrows():
-                if not math.isnan(row['go'][0][0]):
+            for index, row in df_trial_2.iterrows():
+                if not math.isnan(row['go_odor'][0]):
                     trialtype.append('go')
-                elif not math.isnan(row['no_go'][0][0]):
+                elif not math.isnan(row['nogo_odor'][0]):
                     trialtype.append('no_go')
-                elif not math.isnan(row['go_omit'][0][0]):
+                elif not math.isnan(row['go_omit'][0]):
                     trialtype.append('go_omit')
+                    df_trial_2.at[index, 'go_odor'] =row['go_omit']
                 elif not math.isnan(row['background'][0][0]):
                     trialtype.append('background')
-                elif not math.isnan(row['UnpredReward'][0][0]):
-                    trialtype.append('UnpredReward')
+                elif not math.isnan(row['UnpredReward'][0]):
+                    trialtype.append('unpred_water')
+                elif not math.isnan(row['control_odor'][0]):
+                    trialtype.append('c_reward')
+                elif not math.isnan(row['control_odor_omit'][0]):
+                    trialtype.append('c_omit')
+                    df_trial_2.at[index, 'control_odor'] =row['control_odor_omit']
+
+            
             df_trial.insert(0,'Trialtype',trialtype)
-            df_trial['lickings'] = mat_contents['Events']['Port1Out'][0]
+            df_trial_2.insert(0,'trialtype',trialtype)
+            df_trial['lickings'] = [x[0] if len(x) != 0 else x for x in mat_contents['Events']['Port1Out'][0]]
+            df_trial_2['licking'] = [x[0] if len(x) != 0 else x for x in mat_contents['Events']['Port1Out'][0]]
             df_trial['id'] = [self.mouse_id]*trial_num
             df_trial['trialnum'] = np.arange(trial_num)
             df_trial['session'] = [session] *trial_num
@@ -196,14 +233,16 @@ class Mouse_data:
             df_trial['group'] = [self.group] *trial_num
             
             perdate_df['dataframe'] = df_trial
-            
 
             
             df.update({str(session) +'_'+ date:perdate_df}) # create the dict of key: date and value: data dataframe
+            
+            df_2.update({str(session) +'_'+ date:df_trial_2})
         self.df_bpod_doric = df #individual mouse event code data
+        self.df_trials = df_2
         date_format = '%Y-%m-%d'
         index = np.argsort(date_list)
-        self.all_days = [date_list[i] for i in index]
+        self.all_days = [str(session) + '_' + date_list[i] for i in index]
         self.training_type = [task[i] for i in index]
         
         print('---------------------------------------------')
@@ -235,15 +274,16 @@ if __name__ == '__main__':
 
     
     #********************
-    load_path = 'D:/PhD/Photometry/DATA/round_20220504/'
+    load_path = 'D:/PhD/Photometry/DATA/round_20221111-right-pilot_c-odor'
     
     # load file
   
     
     # mouse_names = ['FgDA_03','FgDA_04','FgDA_05']
-    mouse_names = ['FgDA_02']
+    # mouse_names = ['FgDA_02']
+    mouse_names = ['FgDA_07']
     for mouse_name in mouse_names:
-        cute = Mouse_data(mouse_name, protocol = 'Selina_C5D5R3E5R3',filedir = load_path,group = 'T')
+        cute = Mouse_data(mouse_name, protocol = 'Selina_C5D5R3E5R3',filedir = load_path,group = 'C',implant_side = 'R') #### group 
         cute.read_filename()
         #parse data
         cute.create_dataset()

@@ -48,6 +48,8 @@ def event_plot(df,save_dir,mouse_id = '', exp_date = '', filename = 'test',save 
         #            linewidth = width)
         plt.hlines(i, 0, row['TrialEnd'][0][1],color = 'grey',alpha = 0.2,
                    linewidth = width)
+        plt.hlines(i, row['c_odor'][0][0], row['c_odor'][0][1],alpha = 1,
+                   linewidth = width,label = 'control odor' if i ==0 else '')
     lickings = []
     for token in df_copy.lickings.values:
         if len(token) == 0:
@@ -105,8 +107,9 @@ def event_plot(df,save_dir,mouse_id = '', exp_date = '', filename = 'test',save 
     ### change path in the function import part
 
 # mouse_names = ['FgDA_03','FgDA_04','FgDA_05']
-mouse_names = ['FgDA_02']
-path = 'D:/PhD/Photometry/DATA/round_20220504'
+# mouse_names = ['FgDA_06','FgDA_07','FgDA_08']
+mouse_names = ['FgDA_07']
+path = 'D:/PhD/Photometry/DATA/round_20221111-right-pilot_c-odor'
 for mouse_id in mouse_names:    
     
     load_path = os.path.join(path,'processed/{0}_stats.pickle'.format(mouse_id))
@@ -132,26 +135,27 @@ for mouse_id in mouse_names:
         save_dir = os.path.join(path,'figures')
         figure = event_plot(dataframe,mouse_id = mouse.mouse_id,exp_date = day,filename = 'all_trials',save = True,save_dir = save_dir)
         
-        # # only choose go trials for above day
-        # is_go_trials = dataframe['Trialtype'] == 'go' #or 'go_omit' # index of go trials
-        # merged_go_trials = dataframe[is_go_trials] # select out the go trials from the merged dataset
-        # merged_go_trials.index = range(len(merged_go_trials)) # reindex the index; otherwise the index will be original index like 1,4,14,23,etc
+        # only choose go trials for above day
+        is_go_trials = dataframe['Trialtype'] == 'go' #or 'go_omit' # index of go trials
+        merged_go_trials = dataframe[is_go_trials] # select out the go trials from the merged dataset
+        merged_go_trials.index = range(len(merged_go_trials)) # reindex the index; otherwise the index will be original index like 1,4,14,23,etc
         
-        # # plot
-        # figure = event_plot(merged_go_trials,mouse_id = mouse.mouse_id,exp_date = day,filename = 'go_trials',save = True, save_dir = save_dir,width = 3,figuresize = [12,15])
-        # # only choose no_go trials for above day
-        # is_nogo_trials = dataframe['Trialtype'] == 'no_go' # index of no_go trials
-        # merged_nogo_trials = dataframe[is_nogo_trials] # select out the no_go trials from the merged dataset
-        # merged_nogo_trials.index = range(len(merged_nogo_trials)) # reindex the index; otherwise the index will be original index like 1,4,14,23,etc
-        # # plot
-        # figure = event_plot(merged_nogo_trials,mouse_id = mouse.mouse_id,exp_date = day,filename = 'no_go_trials',save = True, save_dir = save_dir,width = 3,figuresize = [12,15])
+        # plot
+        figure = event_plot(merged_go_trials,mouse_id = mouse.mouse_id,exp_date = day,filename = 'go_trials',save = True, save_dir = save_dir,width = 3,figuresize = [12,15])
         
-        # # only choose empty trials for above day
-        # is_background_trials = dataframe['Trialtype'] == 'background' # index of background trials
-        # merged_background_trials = dataframe[is_background_trials] # select out the background trials from the merged dataset
-        # merged_background_trials.index = range(len(merged_background_trials)) # reindex the index; otherwise the index will be original index like 1,4,14,23,etc
-        # # plot
-        # figure = event_plot(merged_background_trials,mouse_id = mouse.mouse_id,exp_date = day,filename = 'background_trials',save = True, save_dir = save_dir,width = 3,figuresize = [12,15])
+        # only choose no_go trials for above day
+        is_nogo_trials = dataframe['Trialtype'] == 'no_go' # index of no_go trials
+        merged_nogo_trials = dataframe[is_nogo_trials] # select out the no_go trials from the merged dataset
+        merged_nogo_trials.index = range(len(merged_nogo_trials)) # reindex the index; otherwise the index will be original index like 1,4,14,23,etc
+        # plot
+        figure = event_plot(merged_nogo_trials,mouse_id = mouse.mouse_id,exp_date = day,filename = 'no_go_trials',save = True, save_dir = save_dir,width = 3,figuresize = [12,15])
+        
+        # only choose empty trials for above day
+        is_background_trials = dataframe['Trialtype'] == 'background' # index of background trials
+        merged_background_trials = dataframe[is_background_trials] # select out the background trials from the merged dataset
+        merged_background_trials.index = range(len(merged_background_trials)) # reindex the index; otherwise the index will be original index like 1,4,14,23,etc
+        # plot
+        figure = event_plot(merged_background_trials,mouse_id = mouse.mouse_id,exp_date = day,filename = 'background_trials',save = True, save_dir = save_dir,width = 3,figuresize = [12,15])
     
     
     

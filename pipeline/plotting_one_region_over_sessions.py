@@ -399,3 +399,11 @@ plot_multi_session_average_trace_overlay(data=average_trace_dict, phase = 'deg_d
                                   region = 'MNacS',types = 'UnpredReward',
                                   CS=None,US = None,figsize = (4,6),
                                   ylim=[-1,7],gap = 12)
+
+#%% 12/11/2022 CHECK initial resposne to water
+for mouse in range(5):
+    if mouse in [3,4]:
+        sns.heatmap(region_data['LNacS']['go'][mouse][:40,:,1])
+    else:   
+        sns.heatmap(region_data['LNacS']['go'][mouse][:40,:,0])
+    plt.show()
